@@ -7,3 +7,5 @@ LAB CYCLE
 
 3)Banker's Algorithm for Deadlock Avoidance
 
+4)Simulate the following page replacement algorithm
+   a) FIFO     b)LRU    c)LFU
