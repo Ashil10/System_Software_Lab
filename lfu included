@@ -1,0 +1,176 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int present(int frame[], int item, int f) {
+    for (int i = 0; i < f; i++)
+        if (frame[i] == item)
+            return 1;
+    return 0;
+}
+
+void print(int frame[], int f) {
+    printf("|");
+    for (int i = 0; i < f; i++) {
+        if (frame[i] != -1)
+            printf("%d |", frame[i]);
+        else
+            printf("  |");
+    }
+    printf("\n");
+}
+
+void fifo(int refstr[],int frame[],int n,int f){
+    int loc=0,pgflt=0;
+    for (int i=0;i<n;i++){
+        printf("%d",refstr[i]);
+        if(present(frame,refstr[i],f)){
+            printf("\tNo Page Fault\t");
+            print(frame,f);
+        }
+        else{
+            printf("\tPage Fault...\t");
+            pgflt++;
+            frame[loc]=refstr[i];
+            loc=(loc+1)%f;
+            print(frame,f);
+        }
+    }
+    printf("\nThere are %d pagefaults\n",pgflt);
+}
+void lru(int refstr[],int frame[],int n,int f){
+    int loc=0,pgflt=0;
+    int i;
+    for (i=0;i<n;i++){
+        printf("%d",refstr[i]);
+        if(present(frame,refstr[i],f)){
+            printf("\tNo Page Fault\t");
+            print(frame,f);
+        }
+        else{
+            printf("\tPage Fault...\t");
+            pgflt++;
+            if(pgflt<=f){
+                frame[loc]=refstr[i];
+                loc++;
+            }
+            else{
+                int min=1000,inx,flag;
+                for(int x=0;x<f;x++){
+                    flag=0;
+                    for(int j=i-1;j>=0;j--){
+                        if(refstr[j]==frame[x]){
+                            flag=1;
+                            if(j<min){
+                                min=j;
+                                inx=x;
+                            }
+                            break;
+                        }
+                    }
+                    if(flag==0){
+                        inx=x;
+                        break;
+                    }
+                }
+                frame[inx]=refstr[i];
+            }
+            print(frame,f);
+        }
+    }
+    printf("\nThere are %d pagefaults\n",pgflt);
+}
+
+void lfu(int refstr[], int frame[], int n, int f) {
+    int loc = 0, pgflt = 0;
+    int i;
+    int usageCount[f]; // Array to store usage frequency for each frame
+
+    for (i = 0; i < f; i++) {
+        frame[i] = -1; // Initialize frame
+        usageCount[i] = 0; // Initialize usage count
+    }
+
+    for (i = 0; i < n; i++) {
+        printf("%d", refstr[i]);
+        if (present(frame, refstr[i], f)) {
+            printf("\tNo Page Fault\t");
+            print(frame, f);
+            // Increment usage count for the page in the frame
+            for (int j = 0; j < f; j++) {
+                if (frame[j] == refstr[i]) {
+                    usageCount[j]++;
+                    break;
+                }
+            }
+        } else {
+            printf("\tPage Fault...\t");
+            pgflt++;
+            if (pgflt <= f) {
+                frame[loc] = refstr[i];
+                loc++;
+            } else {
+                // Find the frame with the lowest usage count
+                int minUsage = usageCount[0];
+                int minIndex = 0;
+                for (int j = 1; j < f; j++) {
+                    if (usageCount[j] < minUsage) {
+                        minUsage = usageCount[j];
+                        minIndex = j;
+                    }
+                }
+                frame[minIndex] = refstr[i];
+                usageCount[minIndex] = 1; // Reset usage count
+            }
+            print(frame, f);
+        }
+    }
+    printf("\nThere are %d page faults\n", pgflt);
+}
+
+
+int frameIndex(int frame[], int item, int f) {
+    for (int i = 0; i < f; i++) {
+        if (frame[i] == item) {
+            return i;
+        }
+    }
+    return -1; // Not found
+}
+
+
+int main() {
+    int f, n, ch;
+    printf("Enter the number of frames: ");
+    scanf("%d", &f);
+    int frame[f];
+    printf("Enter the size of reference string: ");
+    scanf("%d", &n);
+    int refstr[n];
+    printf("Enter the reference string: ");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &refstr[i]);
+    printf("\n\t1. First In First Out\n\t2. Least Recently Used\n\t3. Least Frequently Used\n");
+    while (1) {
+        printf("\nEnter your choice: ");
+        scanf("%d", &ch);
+        for (int i = 0; i < f; i++) {
+            frame[i] = -1;
+        }
+        switch (ch) {
+            case 1:
+                fifo(refstr, frame, n, f);
+                break;
+            case 2:
+                lru(refstr, frame, n, f);
+                break;
+            case 3:
+                lfu(refstr, frame, n, f);
+                break;
+                case $:
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
+
