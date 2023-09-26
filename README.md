@@ -11,3 +11,5 @@ LAB CYCLE
    a) FIFO     b)LRU    c)Optimal d)LFU
 
 5)Disk Scheduling Algorithms - FCFS,SCAN,C SCAN
+
+6)Pass One of a two pass Assembler
