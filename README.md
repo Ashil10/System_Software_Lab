@@ -13,3 +13,11 @@ LAB CYCLE
 5)Disk Scheduling Algorithms - FCFS,SCAN,C SCAN
 
 6)Pass One of a two pass Assembler
+
+7)Pass Two of a two pass Assembler
+
+8)Absolute Loader
+
+9)Relocation Loader
+
+10)MACRO Single Pass
