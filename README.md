@@ -1,4 +1,4 @@
-# MicroProcessor_Lab
+# Microprocessor_Lab
 LAB CYCLE
 
 1) Write a MASM program to implement the addition of 3 8 bit numbers.
